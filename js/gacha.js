@@ -185,19 +185,21 @@ class GachaGame {
     }
 
     this.state.phase = 'SHUFFLE';
-    this.notify('SHUFFLE_STARTED');
 
-    // Randomize internal display order for shuffle
-    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    for (let i = indices.length - 1; i > 0; i--) {
+    // Fisher-Yates shuffle the actual rewards across the 10 slots
+    const rewards = this.state.slots.map(s => s.reward);
+    for (let i = rewards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]];
+      [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
     }
 
-    // Assign randomized egg slots
+    // Reassign shuffled rewards to slots
     this.state.slots.forEach((slot, i) => {
-      slot.displayOrder = indices[i];
+      slot.reward = rewards[i];
+      slot.displayOrder = i;
     });
+
+    this.notify('SHUFFLE_STARTED');
 
     setTimeout(() => {
       this.state.phase = 'OPENING';

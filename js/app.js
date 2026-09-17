@@ -20,9 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnHistory = document.getElementById('btn-history');
   const btnRules = document.getElementById('btn-rules');
   const btnResetData = document.getElementById('btn-reset-data');
-  const btnToggleBg = document.getElementById('btn-toggle-bg');
-  const leftStageClean = document.getElementById('left-stage-clean');
-  let isCleanMode = false;
 
   // Modals
   const rewardModal = document.getElementById('reward-modal');
@@ -163,18 +160,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Gold update
     goldAmountEl.textContent = Number(gold).toLocaleString();
 
-    // 2. Background phase toggle (mockup_preview vs mockup_eggs or clean_bg)
-    if (isCleanMode) {
-      gameContainer.classList.add('mode-clean');
-      if (leftStageClean) leftStageClean.style.display = 'block';
+    // 2. Background phase toggle (mockup_preview vs mockup_eggs)
+    if (phase === 'PREVIEW') {
+      gameContainer.classList.remove('phase-eggs');
     } else {
-      gameContainer.classList.remove('mode-clean');
-      if (leftStageClean) leftStageClean.style.display = 'none';
-      if (phase === 'PREVIEW') {
-        gameContainer.classList.remove('phase-eggs');
-      } else {
-        gameContainer.classList.add('phase-eggs');
-      }
+      gameContainer.classList.add('phase-eggs');
     }
 
     if (mascotRibbonImg) {
@@ -220,18 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (phase === 'OPENING') {
         wrapper.classList.add('can-open');
 
-        // In Clean Mode, render egg sprite because board slots are empty.
-        // In Original Mode, DO NOT render duplicate eggLayer in idle state (fixes double-egg bug!).
-        if (isCleanMode) {
-          const eggLayer = document.createElement('div');
-          eggLayer.className = 'egg-layer';
-          const eggImg = document.createElement('img');
-          eggImg.className = 'egg-sprite';
-          eggImg.src = 'assets/egg.png';
-          eggImg.alt = 'Golden Egg';
-          eggLayer.appendChild(eggImg);
-          wrapper.appendChild(eggLayer);
-        }
+        const eggLayer = document.createElement('div');
+        eggLayer.className = 'egg-layer';
+
+        const eggImg = document.createElement('img');
+        eggImg.className = 'egg-sprite';
+        eggImg.src = 'assets/egg.png';
+        eggImg.alt = 'Golden Egg';
+
+        eggLayer.appendChild(eggImg);
+        wrapper.appendChild(eggLayer);
 
         // Unopened egg click handler
         wrapper.addEventListener('click', () => {
@@ -249,28 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
         eggLayer.appendChild(eggImg);
         wrapper.appendChild(eggLayer);
       } else if (phase === 'PREVIEW') {
-        // In Clean Mode, render the prize card in preview
-        if (isCleanMode) {
-          const card = document.createElement('div');
-          card.className = `slot-card ${slot.reward.isGrand ? 'grand-card' : ''}`;
-          const content = document.createElement('div');
-          content.className = 'prize-content';
-          const iconWrap = document.createElement('div');
-          iconWrap.className = 'prize-icon-wrap';
-          const iconImg = document.createElement('img');
-          iconImg.className = 'prize-icon';
-          iconImg.src = slot.reward.icon;
-          iconImg.alt = slot.reward.name;
-          iconWrap.appendChild(iconImg);
-          const badge = document.createElement('div');
-          badge.className = `prize-badge ${slot.reward.isGrand ? 'grand-badge' : ''}`;
-          badge.textContent = slot.reward.isGrand ? 'Grand Prize' : slot.reward.label;
-          content.appendChild(iconWrap);
-          content.appendChild(badge);
-          card.appendChild(content);
-          wrapper.appendChild(card);
-        }
-
         // In preview phase, clicking a slot starts shuffle
         wrapper.addEventListener('click', () => {
           handleSlotClick(index, wrapper);
@@ -325,17 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Play tactile audio
     window.soundEngine.playClick();
-    // Ensure eggLayer exists during cracking
-    if (!wrapperEl.querySelector('.egg-layer')) {
-      const eggLayer = document.createElement('div');
-      eggLayer.className = 'egg-layer';
-      const eggImg = document.createElement('img');
-      eggImg.className = 'egg-sprite';
-      eggImg.src = 'assets/egg.png';
-      eggImg.alt = 'Golden Egg';
-      eggLayer.appendChild(eggImg);
-      wrapperEl.appendChild(eggLayer);
-    }
+    window.soundEngine.playCoin();
 
     // Crack animation
     wrapperEl.classList.add('cracking');
@@ -387,7 +343,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Shuffle Phase Sequence
   function startShuffleSequence(onFinished) {
     window.soundEngine.playShuffle();
+
+    // Shuffle the actual rewards across the slots so Grand Prize moves randomly
+    const rewards = game.state.slots.map(s => s.reward);
+    for (let i = rewards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [rewards[i], rewards[j]] = [rewards[j], rewards[i]];
+    }
+    game.state.slots.forEach((slot, i) => {
+      slot.reward = rewards[i];
+    });
+
     game.state.phase = 'SHUFFLE';
+    game.saveState();
+
     if (mascotRibbonImg) {
       mascotRibbonImg.src = 'assets/ribbon_eggs.png';
       mascotRibbonImg.classList.add('bounce');

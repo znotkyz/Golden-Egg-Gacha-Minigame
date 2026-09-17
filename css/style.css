@@ -1,0 +1,872 @@
+/* =========================================================
+   Golden Egg Gacha - Minigame Master Stylesheet
+   Faithful to the official mockup design with rich animations
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Outfit:wght@400;600;800;900&display=swap');
+
+:root {
+  --font-main: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-num: 'Outfit', 'Kanit', sans-serif;
+
+  --color-gold: #ffcc00;
+  --color-gold-dark: #d48800;
+  --color-cyan: #00b4d8;
+  --color-pink: #ff2a7a;
+  --color-bg-dark: #121018;
+
+  --game-width: 1024px;
+  --game-height: 575px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background-color: var(--color-bg-dark);
+  background-image: radial-gradient(circle at 50% 30%, #2a203f 0%, #0d0b14 100%);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #333;
+}
+
+/* =========================================================
+   Game Viewport & Responsive Container
+   Preserves 16:9 Aspect Ratio with Scaled Resolution
+   ========================================================= */
+.viewport-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-container {
+  position: relative;
+  width: var(--game-width);
+  height: var(--game-height);
+  background: url('../assets/mockup_preview.jpg') no-repeat center center;
+  background-size: cover;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transform-origin: center center;
+  transition: background-image 0.3s ease;
+}
+
+.game-container.phase-eggs {
+  background-image: url('../assets/mockup_eggs.jpg');
+}
+
+/* =========================================================
+   Top Navigation & Header Elements
+   ========================================================= */
+.top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.top-left-actions, .top-right-actions {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Back Button Hotspot */
+.btn-back {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn-back:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.btn-back:active {
+  transform: scale(0.95);
+}
+
+/* Utility Bar for testing & info (Centered at top) */
+.utility-bar {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(18, 14, 28, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 215, 0, 0.45);
+  border-radius: 24px;
+  padding: 4px 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  z-index: 60;
+  pointer-events: auto;
+}
+
+.btn-utility {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ffd700;
+  border-radius: 14px;
+  padding: 4px 10px;
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 700;
+  color: #4a2800;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.btn-utility:hover {
+  transform: scale(1.08);
+  background: #ffffff;
+}
+
+/* Gold Bar Overlay (Shows live Gold number & clickable + button) */
+.gold-bar-overlay {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 235px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.gold-amount {
+  color: #ffffff;
+  font-family: var(--font-num);
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: 0.5px;
+  background: #253344;
+  border-radius: 8px;
+  padding: 1px 8px;
+  margin-right: 48px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.btn-add-gold-hotspot {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.15s ease;
+}
+
+.btn-add-gold-hotspot:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.8);
+}
+
+/* =========================================================
+   Board & 10 Interactive Slots Grid
+   Aligned with the 10 slots on mockup_preview & mockup_eggs
+   ========================================================= */
+.board-zone {
+  position: absolute;
+  top: 130px;
+  left: 355px;
+  width: 565px;
+  height: 280px;
+  z-index: 20;
+}
+
+.slots-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 102px);
+  grid-template-rows: repeat(2, 135px);
+  column-gap: 13px;
+  row-gap: 10px;
+}
+
+.slot-wrapper {
+  position: relative;
+  width: 102px;
+  height: 135px;
+  cursor: pointer;
+  perspective: 1000px;
+  border-radius: 14px;
+  transition: transform 0.15s ease;
+}
+
+.slot-wrapper.can-open:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.7);
+}
+
+.slot-wrapper {
+  position: relative;
+  width: 102px;
+  height: 135px;
+  cursor: pointer;
+  perspective: 1000px;
+}
+
+/* Inner Card Container */
+.slot-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffef9 0%, #f7edd8 100%);
+  border: 1.5px solid #d4be9b;
+  box-shadow: 0 4px 10px rgba(140, 100, 60, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 6px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.slot-card.grand-card {
+  background: radial-gradient(circle at 50% 35%, #ffffff 0%, #fff7e6 60%, #ffedd0 100%);
+  border: 2px solid #ffd700;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.35), inset 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.slot-card.grand-card::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg, transparent, rgba(255, 215, 0, 0.25), transparent);
+  animation: rotateLight 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotateLight {
+  100% { transform: rotate(360deg); }
+}
+
+/* Prize Icon & Label Inside Card */
+.prize-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.prize-icon-wrap {
+  width: 100%;
+  height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.prize-icon {
+  max-width: 90%;
+  max-height: 85px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+  transition: transform 0.25s ease;
+}
+
+.prize-badge {
+  background: linear-gradient(180deg, #fff7e6 0%, #ffe0a3 100%);
+  border: 1px solid #d49842;
+  border-radius: 12px;
+  padding: 2px 14px;
+  font-family: var(--font-num);
+  font-size: 14px;
+  font-weight: 800;
+  color: #8c4a00;
+  box-shadow: 0 2px 4px rgba(140, 74, 0, 0.15);
+  margin-top: 2px;
+}
+
+.prize-badge.grand-badge {
+  background: linear-gradient(180deg, #ff4d6d 0%, #c9184a 100%);
+  border: 1.5px solid #ffccd5;
+  color: #ffffff;
+  font-size: 11px;
+  font-family: var(--font-main);
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(201, 24, 74, 0.3);
+}
+
+/* =========================================================
+   Golden Egg Overlay Layer
+   ========================================================= */
+.egg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+  pointer-events: auto;
+}
+
+.egg-sprite {
+  width: 92px;
+  height: auto;
+  filter: drop-shadow(0 8px 12px rgba(180, 100, 20, 0.35));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.egg-shadow {
+  width: 60px;
+  height: 14px;
+  background: radial-gradient(ellipse at center, rgba(160, 110, 60, 0.45) 0%, rgba(160, 110, 60, 0) 75%);
+  border-radius: 50%;
+  margin-top: -6px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Hover effects for interactive eggs */
+.slot-wrapper.can-open:hover .egg-sprite {
+  transform: translateY(-6px) scale(1.06);
+  filter: drop-shadow(0 14px 16px rgba(255, 200, 0, 0.55)) brightness(1.06);
+}
+
+.slot-wrapper.can-open:hover .egg-shadow {
+  transform: scale(1.15);
+  opacity: 0.6;
+}
+
+/* Egg Cracking Animation */
+.slot-wrapper.cracking .egg-sprite {
+  animation: eggVibrate 0.45s infinite ease-in-out;
+}
+
+@keyframes eggVibrate {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-3px, 2px) rotate(-4deg); }
+  40% { transform: translate(3px, -2px) rotate(4deg); }
+  60% { transform: translate(-2px, -1px) rotate(-2deg); }
+  80% { transform: translate(2px, 1px) rotate(3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Burst & Disappear */
+.slot-wrapper.bursting .egg-layer {
+  animation: eggBurst 0.5s forwards ease-out;
+}
+
+@keyframes eggBurst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    filter: brightness(1.8) drop-shadow(0 0 25px #ffd700);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+}
+
+/* Shuffle State Movements */
+.slot-wrapper.shuffling {
+  transition: transform 0.4s cubic-bezier(0.45, 0, 0.55, 1);
+  pointer-events: none;
+}
+
+/* Opened Egg State */
+.slot-wrapper.opened {
+  cursor: default;
+}
+
+.slot-wrapper.opened .egg-layer {
+  display: none !important;
+}
+
+.slot-wrapper.opened .slot-card {
+  filter: saturate(0.9);
+}
+
+.slot-wrapper.opened .prize-content::after {
+  content: '✓ เปิดแล้ว';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(30, 41, 59, 0.75);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+/* =========================================================
+   Bottom Action Buttons (Interactive Hotspots over Mockup)
+   ========================================================= */
+.bottom-actions {
+  position: absolute;
+  bottom: 22px;
+  left: 345px;
+  width: 645px;
+  height: 105px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 40;
+}
+
+.btn-hotspot {
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  user-select: none;
+}
+
+/* 1. Open 1 Egg Hotspot */
+.btn-hotspot.btn-open-1 {
+  width: 212px;
+  height: 88px;
+  border-radius: 44px;
+}
+
+.btn-hotspot.btn-open-1:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 25px rgba(0, 180, 255, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.5);
+  border-radius: 44px;
+}
+
+.btn-hotspot.btn-open-1:active {
+  transform: scale(0.96);
+}
+
+/* 2. Bulk 10 Eggs Hotspot */
+.btn-hotspot.btn-open-10 {
+  width: 280px;
+  height: 102px;
+  border-radius: 51px;
+}
+
+.btn-hotspot.btn-open-10:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 28px rgba(255, 28, 122, 0.9), inset 0 0 18px rgba(255, 255, 255, 0.6);
+  border-radius: 51px;
+}
+
+.btn-hotspot.btn-open-10:active {
+  transform: scale(0.96);
+}
+
+/* 3. Refresh Board Hotspot */
+.btn-hotspot.btn-refresh {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.refresh-glow-effect {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* When Unlocked: Active glowing ring & pulse */
+.btn-hotspot.btn-refresh.unlocked {
+  cursor: pointer;
+  animation: pulseGold 1.5s infinite ease-in-out;
+}
+
+.btn-hotspot.btn-refresh.unlocked .refresh-glow-effect {
+  opacity: 1;
+  border: 4px solid #ffd700;
+  box-shadow: 0 0 25px #ffd700, inset 0 0 15px #ffd700;
+}
+
+/* Revealed Prize Card on Board */
+.slot-card.revealed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffef9 0%, #f7edd8 100%);
+  border: 1.5px solid #d4be9b;
+  box-shadow: 0 4px 10px rgba(140, 100, 60, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 6px;
+  z-index: 10;
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.4); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.slot-card.revealed.grand-card {
+  background: radial-gradient(circle at 50% 35%, #ffffff 0%, #fff7e6 60%, #ffedd0 100%);
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+
+/* =========================================================
+   Particle System Canvas & Light FX
+   ========================================================= */
+#fx-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 80;
+}
+
+/* =========================================================
+   Modals & Reward Overlays
+   ========================================================= */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 8, 16, 0.82);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-dialog {
+  position: relative;
+  background: linear-gradient(180deg, #fffdf8 0%, #fdf2de 100%);
+  border: 3px solid #ffcc00;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 204, 0, 0.4);
+  padding: 24px 30px;
+  max-width: 540px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: scale(0.85);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-dialog {
+  transform: scale(1);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  transform: scale(1.15);
+}
+
+/* Reward Claim Modal Specifics */
+.reward-burst-bg {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: conic-gradient(from 0deg, rgba(255, 215, 0, 0.35), transparent 45deg, rgba(255, 215, 0, 0.35) 90deg, transparent 135deg, rgba(255, 215, 0, 0.35) 180deg, transparent 225deg, rgba(255, 215, 0, 0.35) 270deg, transparent 315deg, rgba(255, 215, 0, 0.35) 360deg);
+  border-radius: 50%;
+  animation: rotateLight 10s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.reward-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: #ff9900;
+  text-shadow: 0 2px 4px rgba(255, 153, 0, 0.2);
+  margin-bottom: 12px;
+  z-index: 2;
+}
+
+.reward-title.grand-title {
+  color: #ff1c7a;
+  text-shadow: 0 2px 8px rgba(255, 28, 122, 0.35);
+  font-size: 28px;
+}
+
+.reward-card-display {
+  position: relative;
+  z-index: 2;
+  width: 140px;
+  height: 185px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff7e6 100%);
+  border: 3px solid #ffcc00;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(212, 140, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  margin: 10px 0 18px 0;
+  animation: rewardFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes rewardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.reward-card-display img {
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.reward-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #4a2800;
+  text-align: center;
+  z-index: 2;
+  margin-bottom: 6px;
+}
+
+.reward-desc {
+  font-size: 14px;
+  color: #795548;
+  text-align: center;
+  max-width: 380px;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  z-index: 2;
+}
+
+.btn-claim {
+  z-index: 2;
+  min-width: 180px;
+  height: 52px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #ffcc00 0%, #f59f00 100%);
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  font-family: var(--font-main);
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(245, 159, 0, 0.4);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn-claim:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Bulk Summary Grid */
+.bulk-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin: 14px 0 20px 0;
+}
+
+.bulk-item {
+  background: #ffffff;
+  border: 1.5px solid #ecd4ab;
+  border-radius: 12px;
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.bulk-item.is-grand {
+  border: 2px solid #ff4d6d;
+  background: #fff0f3;
+  box-shadow: 0 0 10px rgba(255, 77, 109, 0.35);
+}
+
+.bulk-item img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.bulk-item span {
+  font-size: 12px;
+  font-weight: 800;
+  color: #795548;
+  margin-top: 4px;
+}
+
+.bulk-item.is-grand span {
+  color: #c9184a;
+}
+
+/* History / Drawer List */
+.history-list {
+  max-height: 280px;
+  overflow-y: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0;
+  padding-right: 4px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.history-item.is-grand {
+  background: #fff0f3;
+  border-color: #ffb3c1;
+}
+
+.history-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-item-left img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 120;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast-message {
+  background: rgba(30, 41, 59, 0.92);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 215, 0, 0.6);
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  animation: toastPop 2.5s forwards cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes toastPop {
+  0% { opacity: 0; transform: translateY(-15px) scale(0.9); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  80% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+}

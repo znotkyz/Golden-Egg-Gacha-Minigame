@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ตู้สุ่มไข่ทองคำ (Golden Egg Gacha Minigame)</title>
+  <meta name="description" content="มินิเกมตู้สุ่มไข่ทองคำ ลุ้นรางวัลใหญ่ Grand Prize และชิปมหาศาล ระบบ Box Gacha บนเว็บ">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="viewport-wrapper">
+    <div class="game-container">
+
+      <!-- FX Particle Canvas -->
+      <canvas id="fx-canvas"></canvas>
+
+      <!-- Toast Notification Container -->
+      <div id="toast-container" class="toast-container"></div>
+
+      <!-- Top Header Navigation -->
+      <header class="top-bar">
+        <div class="top-left-actions">
+          <button class="btn-back" id="btn-back" title="กลับหน้าหลัก"></button>
+        </div>
+
+        <!-- Center Utility Bar -->
+        <div class="utility-bar">
+          <button class="btn-utility" id="btn-toggle-bg" title="สลับโหมดภาพ Original / Clean">🖼️ สลับโหมดภาพ</button>
+          <button class="btn-utility" id="btn-rules" title="กติกาและรางวัล">ℹ️ กติกา</button>
+          <button class="btn-utility" id="btn-history" title="กระเป๋าและประวัติ">🎒 กระเป๋า</button>
+          <button class="btn-utility" id="btn-mute" title="เปิด/ปิดเสียง">🔊 เสียง</button>
+          <button class="btn-utility" id="btn-reset-data" title="รีเซ็ตข้อมูลทดสอบ">⚙️ รีเซ็ต</button>
+        </div>
+
+        <div class="top-right-actions">
+          <!-- Live Gold Currency Display Overlay -->
+          <div class="gold-bar-overlay">
+            <span class="gold-amount" id="gold-amount">1,248</span>
+            <button class="btn-add-gold-hotspot" id="btn-add-gold" title="เติม Gold ทดสอบ">+</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Left Stage Clean (Used in Clean Mode) -->
+      <div class="left-stage-clean" id="left-stage-clean" style="display: none;"></div>
+
+      <!-- 10 Slots Board Area -->
+      <main class="board-zone">
+        <div class="slots-grid" id="slots-grid">
+          <!-- 10 Slots interactive layer -->
+        </div>
+      </main>
+
+      <!-- Bottom Interactive Action Button Hotspots -->
+      <footer class="bottom-actions">
+        <!-- 1. Open 1 Egg Hotspot -->
+        <button id="btn-open-1" class="btn-hotspot btn-open-1" title="เปิดไข่ 1 ฟอง (5 Gold)"></button>
+
+        <!-- 2. Bulk 10 Eggs Hotspot -->
+        <button id="btn-open-10" class="btn-hotspot btn-open-10" title="เหมาเปิดทั้งกระดาน 10 ฟอง (49 Gold)"></button>
+
+        <!-- 3. Refresh Board Hotspot -->
+        <button id="btn-refresh" class="btn-hotspot btn-refresh" disabled title="เปิดได้รางวัลใหญ่เพื่อรีเฟรชกระดานฟรี">
+          <div class="refresh-glow-effect"></div>
+        </button>
+      </footer>
+
+      <!-- Modal 1: Single Reward Claim Modal -->
+      <div id="reward-modal" class="modal-overlay">
+        <div class="modal-dialog">
+          <button class="modal-close-btn">&times;</button>
+          <div class="reward-burst-bg"></div>
+          <h2 id="reward-modal-title" class="reward-title">ยินดีด้วย! คุณได้รับรางวัล</h2>
+          <div id="reward-card-display" class="reward-card-display">
+            <!-- Dynamic Image -->
+          </div>
+          <h3 id="reward-name" class="reward-name">+50,000 Chips</h3>
+          <p id="reward-desc" class="reward-desc">ไอเทมถูกส่งเข้ากระเป๋าเรียบร้อยแล้ว</p>
+          <button id="btn-claim-reward" class="btn-claim">ตกลง</button>
+        </div>
+      </div>
+
+      <!-- Modal 2: Bulk 10 Summary Modal -->
+      <div id="bulk-modal" class="modal-overlay">
+        <div class="modal-dialog" style="max-width: 580px;">
+          <button class="modal-close-btn">&times;</button>
+          <h2 class="reward-title grand-title">🎉 เหมาเปิด 10 ฟองสำเร็จ! 🎉</h2>
+          <div id="bulk-grid" class="bulk-grid">
+            <!-- 10 bulk item cards generated dynamically -->
+          </div>
+          <div style="font-size: 20px; font-weight: 800; color: #ff9900; margin-bottom: 12px;">
+            รวมชิปที่ได้รับ: <span id="bulk-total-chips" style="color: #2b8a3e;">+0 Chips</span>
+          </div>
+          <button id="btn-claim-bulk" class="btn-claim">รับรางวัลทั้งหมด</button>
+        </div>
+      </div>
+
+      <!-- Modal 3: History & Backpack Drawer -->
+      <div id="history-modal" class="modal-overlay">
+        <div class="modal-dialog" style="max-width: 500px;">
+          <button class="modal-close-btn">&times;</button>
+          <h2 class="reward-title" style="color: #3b82f6;">🎒 กระเป๋า & ประวัติการสุ่ม</h2>
+          <div style="display: flex; gap: 16px; margin: 10px 0; width: 100%;">
+            <div style="flex:1; background:#e7f5ff; border:1px solid #74c0fc; border-radius:12px; padding:10px; text-align:center;">
+              <div style="font-size:12px; color:#1971c2; font-weight:700;">ชิปสะสมจากไข่</div>
+              <div id="history-total-chips" style="font-size:20px; font-weight:900; color:#1864ab;">0</div>
+            </div>
+            <div style="flex:1; background:#fff0f6; border:1px solid #f783ac; border-radius:12px; padding:10px; text-align:center;">
+              <div style="font-size:12px; color:#c2255c; font-weight:700;">Grand Prize ที่ได้</div>
+              <div id="history-total-grands" style="font-size:20px; font-weight:900; color:#a61e4d;">0</div>
+            </div>
+          </div>
+          <div id="history-list" class="history-list">
+            <!-- History items -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 4: Top-up Gold (Testing Tool) -->
+      <div id="topup-modal" class="modal-overlay">
+        <div class="modal-dialog" style="max-width: 440px;">
+          <button class="modal-close-btn">&times;</button>
+          <h2 class="reward-title" style="color: #16a34a;">💰 เติม Gold ทดสอบระบบ</h2>
+          <p style="font-size: 14px; color: #666; margin-bottom: 16px; text-align:center;">
+            สำหรับทดสอบ Prototype สามารถกดรับ Gold ฟรีเพื่อลองสุ่มได้ไม่อั้น:
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+            <button class="btn-claim btn-add-amount" data-amount="100" style="background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);">
+              +100 Gold (ฟรี)
+            </button>
+            <button class="btn-claim btn-add-amount" data-amount="500" style="background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);">
+              +500 Gold (ฟรี)
+            </button>
+            <button class="btn-claim btn-add-amount" data-amount="1000" style="background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);">
+              +1,000 Gold (ฟรี)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal 5: Rules & Exploit Prevention Info -->
+      <div id="rules-modal" class="modal-overlay">
+        <div class="modal-dialog" style="max-width: 520px; max-height: 90vh; overflow-y: auto;">
+          <button class="modal-close-btn">&times;</button>
+          <h2 class="reward-title" style="color: #f59f00;">📜 กติกามินิเกมตู้สุ่มไข่ทองคำ</h2>
+          <div style="font-size: 14px; color: #495057; line-height: 1.6; text-align: left; width: 100%;">
+            <p><strong>1. ระบบราคา:</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 10px;">
+              <li><strong>เปิดทีละ 1 ฟอง:</strong> 5 Gold ต่อฟอง (สามารถเลือกตำแหน่งไข่ได้เอง)</li>
+              <li><strong>เหมาเปิด 10 ฟอง:</strong> 49 Gold (ประหยัดทันที 1 Gold และเปิดพร้อมกันทั้งกระดาน)</li>
+            </ul>
+
+            <p><strong>2. การันตีของรางวัล:</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 10px;">
+              <li>กระดานขนาด 10 ฟอง มีการันตี <strong>Grand Prize หายาก 1 ชิ้นเสมอ</strong></li>
+              <li>รางวัลทั่วไป 9 ชิ้นเป็นชิปมูลค่าสูง (10,000 - 100,000 Chips)</li>
+            </ul>
+
+            <p><strong>3. กติกาการรีเซ็ตกระดาน (Board Reset Rules):</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 10px;">
+              <li><strong>Auto Reset:</strong> เมื่อเปิดครบทั้ง 10 ฟอง ระบบจะโหลดกระดานชุดใหม่ให้ทันที</li>
+              <li><strong>Manual Refresh (ฟรี):</strong> หากเปิดทีละฟองแล้วได้ Grand Prize ตั้งแต่ยังไม่ครบ 10 ฟอง ระบบจะปลดล็อกปุ่ม <strong>"Refresh Board"</strong> ให้กดเริ่มกระดานใหม่ได้ฟรีทันทีโดยไม่ต้องฝืนเปิดไข่ที่เหลือ!</li>
+            </ul>
+
+            <p><strong>4. ระบบป้องกัน Exploit:</strong></p>
+            <ul style="margin-left: 20px;">
+              <li>สถานะกระดาน ไข่ที่เปิดไปแล้ว และเงินรางวัลจะถูกบันทึกไว้ในเบราว์เซอร์เสมอ การรีเฟรชหน้าเว็บหรือออกแล้วเข้าใหม่จะไม่ทำให้กระดานถูกรีเซ็ต</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/gacha.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

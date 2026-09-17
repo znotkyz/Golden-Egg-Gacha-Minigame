@@ -87,7 +87,8 @@ body {
   pointer-events: none;
 }
 
-.top-left-actions, .top-right-actions {
+.top-left-actions,
+.top-right-actions {
   pointer-events: auto;
   display: flex;
   align-items: center;
@@ -107,7 +108,7 @@ body {
 
 .btn-back:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 15px #ffca1a;
 }
 
 .btn-back:active {
@@ -158,7 +159,7 @@ body {
   top: 18px;
   right: 18px;
   width: 235px;
-  height: 48px;
+  height: 43px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -173,10 +174,10 @@ body {
   letter-spacing: 0.5px;
   background: #253344;
   border-radius: 8px;
-  padding: 1px 8px;
-  margin-right: 48px;
+  padding: 1px 30px;
+  margin-right: 50px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .btn-add-gold-hotspot {
@@ -281,7 +282,9 @@ body {
 }
 
 @keyframes rotateLight {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Prize Icon & Label Inside Card */
@@ -389,12 +392,29 @@ body {
 }
 
 @keyframes eggVibrate {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  20% { transform: translate(-3px, 2px) rotate(-4deg); }
-  40% { transform: translate(3px, -2px) rotate(4deg); }
-  60% { transform: translate(-2px, -1px) rotate(-2deg); }
-  80% { transform: translate(2px, 1px) rotate(3deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  20% {
+    transform: translate(-3px, 2px) rotate(-4deg);
+  }
+
+  40% {
+    transform: translate(3px, -2px) rotate(4deg);
+  }
+
+  60% {
+    transform: translate(-2px, -1px) rotate(-2deg);
+  }
+
+  80% {
+    transform: translate(2px, 1px) rotate(3deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
 /* Burst & Disappear */
@@ -407,11 +427,13 @@ body {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.25);
     filter: brightness(1.8) drop-shadow(0 0 25px #ffd700);
     opacity: 0.9;
   }
+
   100% {
     transform: scale(1.6);
     opacity: 0;
@@ -449,8 +471,15 @@ body {
 }
 
 @keyframes motionStreak {
-  0% { transform: scale(0.9, 1.1) rotate(-5deg); opacity: 0.7; }
-  100% { transform: scale(1.2, 0.85) rotate(5deg); opacity: 1; }
+  0% {
+    transform: scale(0.9, 1.1) rotate(-5deg);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1.2, 0.85) rotate(5deg);
+    opacity: 1;
+  }
 }
 
 /* Settle state when eggs snap back into position */
@@ -525,8 +554,8 @@ body {
 }
 
 .btn-hotspot.btn-open-1:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 0 25px rgba(0, 180, 255, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.5);
+  transform: translateY(-8px) translateX(12px) scale(1.0);
+  box-shadow: 0 0 25px rgba(0, 180, 255, 0.8), inset 0 0 15px #ffffff;
   border-radius: 44px;
 }
 
@@ -536,14 +565,14 @@ body {
 
 /* 2. Bulk 10 Eggs Hotspot */
 .btn-hotspot.btn-open-10 {
-  width: 280px;
-  height: 102px;
+  width: 278px;
+  height: 94px;
   border-radius: 51px;
 }
 
 .btn-hotspot.btn-open-10:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 0 28px rgba(255, 28, 122, 0.9), inset 0 0 18px rgba(255, 255, 255, 0.6);
+  transform: translateX(13px) translateY(-9px) scale(0.94);
+  box-shadow: 0 0 28px hsl(41, 100%, 51%), inset 0 0 18px hwb(0 100% 0%);
   border-radius: 51px;
 }
 
@@ -553,8 +582,8 @@ body {
 
 /* 3. Refresh Board Hotspot */
 .btn-hotspot.btn-refresh {
-  width: 96px;
-  height: 96px;
+  width: 90px;
+  height: 100px;
   border-radius: 50%;
   cursor: not-allowed;
   display: flex;
@@ -564,7 +593,7 @@ body {
 
 .refresh-glow-effect {
   position: absolute;
-  inset: -6px;
+  inset: -5px;
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
@@ -578,9 +607,9 @@ body {
 }
 
 .btn-hotspot.btn-refresh.unlocked .refresh-glow-effect {
+  transform: translateY(3px) translateX(39px);
   opacity: 1;
-  border: 4px solid #ffd700;
-  box-shadow: 0 0 25px #ffd700, inset 0 0 15px #ffd700;
+  box-shadow: 0 0 25px #b22cff, inset 0 0 20px hwb(281 38% 0%);
 }
 
 /* Revealed Prize Card on Board */
@@ -604,8 +633,15 @@ body {
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.4); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .slot-card.revealed.grand-card {
@@ -743,8 +779,15 @@ body {
 }
 
 @keyframes rewardFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .reward-card-display img {
@@ -904,8 +947,23 @@ body {
 }
 
 @keyframes toastPop {
-  0% { opacity: 0; transform: translateY(-15px) scale(0.9); }
-  15% { opacity: 1; transform: translateY(0) scale(1); }
-  80% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  0% {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.9);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
 }

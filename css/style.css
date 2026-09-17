@@ -28,8 +28,8 @@
 }
 
 body {
-  background-color: var(--color-bg-dark);
-  background-image: radial-gradient(circle at 50% 30%, #2a203f 0%, #0d0b14 100%);
+  background-color: #1a0f2b;
+  background-image: radial-gradient(circle at 50% 50%, #2a1844 0%, #140b22 100%);
   font-family: var(--font-main);
   min-height: 100vh;
   display: flex;
@@ -41,8 +41,8 @@ body {
 }
 
 /* =========================================================
-   Game Viewport & Responsive Container
-   Preserves 16:9 Aspect Ratio with Scaled Resolution
+   iPhone 18 Pro Landscape Mockup Chassis & Viewport
+   Realistic Titanium Finish, Dynamic Island, Hardware Buttons
    ========================================================= */
 .viewport-wrapper {
   position: relative;
@@ -51,6 +51,220 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+/* iPhone 18 Chassis */
+.iphone-chassis {
+  position: relative;
+  width: 1060px;
+  height: 611px;
+  border-radius: 54px;
+  padding: 18px;
+  background: linear-gradient(135deg, #44424a 0%, #1c1a20 28%, #2e2c34 52%, #141317 76%, #333139 100%);
+  box-shadow:
+    0 0 0 2px #0a090e,
+    0 0 0 4.5px #4a4752,
+    0 0 0 6px #1a191f,
+    0 32px 85px rgba(0, 0, 0, 0.88),
+    0 12px 30px rgba(0, 0, 0, 0.65),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35);
+  transform-origin: center center;
+  transition: transform 0.2s ease, width 0.3s ease, height 0.3s ease, padding 0.3s ease, border-radius 0.3s ease;
+  user-select: none;
+}
+
+/* Screen Area */
+.iphone-screen {
+  position: relative;
+  width: var(--game-width);
+  height: var(--game-height);
+  border-radius: 40px;
+  overflow: hidden;
+  background: #000000;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.85);
+}
+
+.iphone-screen .game-container {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 40px;
+  box-shadow: none;
+}
+
+/* Hardware Buttons (Landscape) */
+.iphone-btn {
+  position: absolute;
+  background: linear-gradient(180deg, #38363e 0%, #1e1d22 100%);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  z-index: 10;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.iphone-btn:active {
+  transform: scale(0.96);
+}
+
+/* Top Edge Buttons */
+.iphone-action-btn {
+  top: -5px;
+  left: 130px;
+  width: 38px;
+  height: 5px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, #4d4955 0%, #25242a 100%);
+}
+
+.iphone-vol-up {
+  top: -5px;
+  left: 185px;
+  width: 64px;
+  height: 5px;
+  border-radius: 3px 3px 0 0;
+}
+
+.iphone-vol-down {
+  top: -5px;
+  left: 265px;
+  width: 64px;
+  height: 5px;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Bottom Edge Buttons */
+.iphone-power-btn {
+  bottom: -5px;
+  left: 200px;
+  width: 90px;
+  height: 5px;
+  border-radius: 0 0 3px 3px;
+}
+
+/* iPhone 16/17/18 Camera Control (Capacitive Indented Button) */
+.iphone-camera-control {
+  bottom: -3.5px;
+  right: 180px;
+  width: 80px;
+  height: 3.5px;
+  border-radius: 0 0 2.5px 2.5px;
+  background: linear-gradient(180deg, #27262c 0%, #141316 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.9), 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+/* Antenna Bands */
+.iphone-antenna {
+  position: absolute;
+  background: #131217;
+  z-index: 5;
+}
+.antenna-tl { top: -6px; left: 85px; width: 4px; height: 6px; }
+.antenna-tr { top: -6px; right: 85px; width: 4px; height: 6px; }
+.antenna-bl { bottom: -6px; left: 85px; width: 4px; height: 6px; }
+.antenna-br { bottom: -6px; right: 85px; width: 4px; height: 6px; }
+
+/* Earpiece Slit on Left Bezel */
+.iphone-speaker-slit {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 54px;
+  background: #0c0c0e;
+  border-radius: 2px;
+  box-shadow: inset 0 0 1px #000;
+  z-index: 5;
+}
+
+/* Dynamic Island (Landscape Left Side) */
+.dynamic-island {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 86px;
+  background: #000000;
+  border-radius: 20px;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 7px 0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.95), inset 0 0 2px rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.island-camera {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #1d3356 0%, #0c1527 60%, #03060a 100%);
+  box-shadow: inset 0 0 2px #4477aa, 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.island-sensor {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #08080a;
+  box-shadow: inset 0 0 1px #222;
+}
+
+.island-indicator {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #34c759;
+  opacity: 0.85;
+  box-shadow: 0 0 4px #34c759;
+}
+
+/* iOS Home Indicator Bar */
+.iphone-home-bar {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 4.5px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  z-index: 95;
+  pointer-events: none;
+}
+
+/* Frameless Mode (When user toggles iPhone frame off) */
+.iphone-chassis.frameless {
+  width: var(--game-width);
+  height: var(--game-height);
+  padding: 0;
+  border-radius: 20px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.iphone-chassis.frameless .iphone-btn,
+.iphone-chassis.frameless .iphone-antenna,
+.iphone-chassis.frameless .iphone-speaker-slit,
+.iphone-chassis.frameless .dynamic-island,
+.iphone-chassis.frameless .iphone-home-bar {
+  display: none !important;
+}
+
+.iphone-chassis.frameless .iphone-screen {
+  border-radius: 20px;
+}
+
+.iphone-chassis.frameless .game-container {
+  border: 2.5px solid rgba(255, 218, 114, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 205, 89, 0.25);
 }
 
 .game-container {
@@ -60,8 +274,9 @@ body {
   background: url('../assets/mockup_preview.jpg') no-repeat center center;
   background-size: cover;
   overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border: 2.5px solid rgba(255, 218, 114, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 205, 89, 0.25);
   transform-origin: center center;
   transition: background-image 0.3s ease;
 }

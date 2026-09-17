@@ -10,27 +10,58 @@
 <body>
 
   <div class="viewport-wrapper">
-    <div class="game-container">
+    <!-- iPhone 18 Pro Landscape Mockup Chassis -->
+    <div class="iphone-chassis" id="iphone-chassis">
+      <!-- Hardware Buttons (Titanium Finish) -->
+      <div class="iphone-btn iphone-action-btn" title="Action Button"></div>
+      <div class="iphone-btn iphone-vol-up" title="Volume Up"></div>
+      <div class="iphone-btn iphone-vol-down" title="Volume Down"></div>
+      <div class="iphone-btn iphone-power-btn" title="Side Power Button"></div>
+      <div class="iphone-btn iphone-camera-control" title="Camera Control"></div>
 
-      <!-- FX Particle Canvas -->
-      <canvas id="fx-canvas"></canvas>
+      <!-- Antenna Bands -->
+      <div class="iphone-antenna antenna-tl"></div>
+      <div class="iphone-antenna antenna-tr"></div>
+      <div class="iphone-antenna antenna-bl"></div>
+      <div class="iphone-antenna antenna-br"></div>
 
-      <!-- Toast Notification Container -->
-      <div id="toast-container" class="toast-container"></div>
+      <!-- Earpiece / Speaker Micro Slit -->
+      <div class="iphone-speaker-slit"></div>
 
-      <!-- Top Header Navigation -->
-      <header class="top-bar">
-        <div class="top-left-actions">
-          <button class="btn-back" id="btn-back" title="กลับหน้าหลัก"></button>
+      <!-- iPhone Screen Area -->
+      <div class="iphone-screen">
+        <!-- Dynamic Island (Landscape Left Side) -->
+        <div class="dynamic-island" id="dynamic-island" title="Dynamic Island">
+          <div class="island-camera"></div>
+          <div class="island-sensor"></div>
+          <div class="island-indicator"></div>
         </div>
 
-        <!-- Center Utility Bar -->
-        <div class="utility-bar">
-          <button class="btn-utility" id="btn-rules" title="กติกาและรางวัล">ℹ️ กติกา</button>
-          <button class="btn-utility" id="btn-history" title="กระเป๋าและประวัติ">🎒 กระเป๋า</button>
-          <button class="btn-utility" id="btn-mute" title="เปิด/ปิดเสียง">🔊 เสียง</button>
-          <button class="btn-utility" id="btn-reset-data" title="รีเซ็ตข้อมูลทดสอบ">⚙️ รีเซ็ต</button>
-        </div>
+        <!-- iOS Home Indicator Bar -->
+        <div class="iphone-home-bar"></div>
+
+        <div class="game-container">
+
+          <!-- FX Particle Canvas -->
+          <canvas id="fx-canvas"></canvas>
+
+          <!-- Toast Notification Container -->
+          <div id="toast-container" class="toast-container"></div>
+
+          <!-- Top Header Navigation -->
+          <header class="top-bar">
+            <div class="top-left-actions">
+              <button class="btn-back" id="btn-back" title="กลับหน้าหลัก"></button>
+            </div>
+
+            <!-- Center Utility Bar -->
+            <div class="utility-bar">
+              <button class="btn-utility" id="btn-rules" title="กติกาและรางวัล">ℹ️ กติกา</button>
+              <button class="btn-utility" id="btn-history" title="กระเป๋าและประวัติ">🎒 กระเป๋า</button>
+              <button class="btn-utility" id="btn-mute" title="เปิด/ปิดเสียง">🔊 เสียง</button>
+              <button class="btn-utility" id="btn-toggle-frame" title="สลับเปิด/ปิดกรอบ iPhone 18">📱 iPhone 18</button>
+              <button class="btn-utility" id="btn-reset-data" title="รีเซ็ตข้อมูลทดสอบ">⚙️ รีเซ็ต</button>
+            </div>
 
         <div class="top-right-actions">
           <!-- Live Gold Currency Display Overlay -->
@@ -166,9 +197,10 @@
           </div>
         </div>
       </div>
-
-    </div>
-  </div>
+        </div> <!-- /.game-container -->
+      </div> <!-- /.iphone-screen -->
+    </div> <!-- /.iphone-chassis -->
+  </div> <!-- /.viewport-wrapper -->
 
   <!-- Scripts -->
   <script src="js/audio.js"></script>

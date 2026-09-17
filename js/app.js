@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // DOM Elements
   const gameContainer = document.querySelector('.game-container');
+  const iphoneChassis = document.getElementById('iphone-chassis');
   const goldAmountEl = document.getElementById('gold-amount');
   const mascotRibbonImg = document.getElementById('mascot-ribbon-img');
   const slotsGrid = document.getElementById('slots-grid');
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnOpen10 = document.getElementById('btn-open-10');
   const btnRefresh = document.getElementById('btn-refresh');
   const btnMute = document.getElementById('btn-mute');
+  const btnToggleFrame = document.getElementById('btn-toggle-frame');
   const btnAddGold = document.getElementById('btn-add-gold');
   const btnHistory = document.getElementById('btn-history');
   const btnRules = document.getElementById('btn-rules');
@@ -51,12 +53,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   resizeCanvas();
 
-  // Responsive Scaling to fit viewport
+  // Responsive Scaling to fit viewport nicely framed with iPhone 18 mockup or frameless
   function handleResize() {
-    const scaleX = window.innerWidth / 1024;
-    const scaleY = window.innerHeight / 575;
-    const scale = Math.min(scaleX, scaleY) * 0.96;
-    gameContainer.style.transform = `scale(${scale})`;
+    const isFrameless = iphoneChassis && iphoneChassis.classList.contains('frameless');
+    const targetW = isFrameless ? 1024 : 1060;
+    const targetH = isFrameless ? 575 : 611;
+
+    const scaleX = window.innerWidth / targetW;
+    const scaleY = window.innerHeight / targetH;
+    // Scale to ~80% of viewport to leave comfortable margins around the floating iPhone
+    // On small mobile screens, adapt to fit comfortably (96%)
+    const marginFactor = (window.innerWidth <= 768 || window.innerHeight <= 500) ? 0.96 : 0.80;
+    const scale = Math.min(scaleX, scaleY) * marginFactor;
+
+    if (iphoneChassis) {
+      iphoneChassis.style.transform = `scale(${scale})`;
+    } else {
+      gameContainer.style.transform = `scale(${scale})`;
+    }
   }
   window.addEventListener('resize', handleResize);
   handleResize();
@@ -603,6 +617,32 @@ document.addEventListener('DOMContentLoaded', () => {
     btnMute.title = isMuted ? 'เปิดเสียง' : 'ปิดเสียง';
     showToast(isMuted ? 'ปิดเสียงเรียบร้อย' : 'เปิดเสียงแล้ว');
   });
+
+  // Toggle iPhone 18 Mockup Frame
+  if (btnToggleFrame && iphoneChassis) {
+    const savedFrame = localStorage.getItem('gacha_iphone_frame');
+    if (savedFrame === 'off') {
+      iphoneChassis.classList.add('frameless');
+      btnToggleFrame.textContent = '🔲 กรอบเดิม';
+    } else {
+      btnToggleFrame.textContent = '📱 iPhone 18';
+    }
+
+    btnToggleFrame.addEventListener('click', () => {
+      window.soundEngine.playClick();
+      const isFrameless = iphoneChassis.classList.toggle('frameless');
+      if (isFrameless) {
+        localStorage.setItem('gacha_iphone_frame', 'off');
+        btnToggleFrame.textContent = '🔲 กรอบเดิม';
+        showToast('สลับเป็นโหมดไม่ใส่กรอบมือถือ');
+      } else {
+        localStorage.setItem('gacha_iphone_frame', 'on');
+        btnToggleFrame.textContent = '📱 iPhone 18';
+        showToast('เปิดกรอบ iPhone 18 Pro Mockup');
+      }
+      handleResize();
+    });
+  }
 
   // Topup Gold Modal
   function openTopupModal() {

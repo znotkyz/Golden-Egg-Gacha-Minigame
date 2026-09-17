@@ -251,10 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         eggLayer.appendChild(eggImg);
         wrapper.appendChild(eggLayer);
       } else if (phase === 'PREVIEW') {
-        // In preview phase, clicking a slot guides user to press "เปิด 1 ฟอง"
-        wrapper.addEventListener('click', () => {
-          handleSlotClick(index, wrapper);
-        });
+        // In preview phase, slots are display-only (no click action)
       }
 
       slotsGrid.appendChild(wrapper);
@@ -276,31 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
     btnOpen10.disabled = (remainingCount === 0);
   }
 
-  // Helper to guide user to the Open 1 button with a pulse effect
-  function highlightOpenButton() {
-    btnOpen1.classList.remove('highlight-pulse');
-    void btnOpen1.offsetWidth; // trigger reflow
-    btnOpen1.classList.add('highlight-pulse');
-    setTimeout(() => btnOpen1.classList.remove('highlight-pulse'), 1100);
-  }
-
   // Handle Slot Click (Open 1 egg)
   function handleSlotClick(slotIndex, wrapperEl) {
-    if (game.state.phase === 'SHUFFLE') return;
+    if (game.state.phase !== 'OPENING') return;
 
-    // In PREVIEW -> Do NOT open or shuffle from clicking cards directly!
-    // Player must press "เปิด 1 ฟอง" button below first!
-    if (game.state.phase === 'PREVIEW') {
-      window.soundEngine.playClick();
-      highlightOpenButton();
-      showToast('💡 กรุณากดปุ่ม "เปิด 1 ฟอง" ด้านล่างเพื่อเริ่มสุ่ม');
-      return;
-    }
-
-    // In OPENING -> Now player can select and crack open this egg
-    if (game.state.phase === 'OPENING') {
-      openSingleEggWithFX(slotIndex, wrapperEl);
-    }
+    openSingleEggWithFX(slotIndex, wrapperEl);
   }
 
   function openSingleEggWithFX(slotIndex, wrapperEl) {

@@ -778,6 +778,28 @@ body {
   transform: scale(0.96);
 }
 
+/* Pulse Highlight when user clicks card before pressing Open 1 */
+@keyframes highlightBtnPulse {
+  0% { transform: translateY(-4px) scale(1); filter: drop-shadow(0 0 0px #00b4d8); }
+  50% { transform: translateY(-10px) scale(1.12); filter: drop-shadow(0 0 30px #00b4d8) brightness(1.35); }
+  100% { transform: translateY(-4px) scale(1); filter: drop-shadow(0 0 0px #00b4d8); }
+}
+
+.btn-hotspot.btn-open-1.highlight-pulse {
+  animation: highlightBtnPulse 0.5s ease 2;
+}
+
+/* Ready Pulse on Golden Eggs after shuffle animation finishes */
+@keyframes eggReadyPulse {
+  0% { transform: scale(1); filter: drop-shadow(0 8px 12px rgba(180, 100, 20, 0.35)); }
+  50% { transform: scale(1.08) translateY(-6px); filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.95)); }
+  100% { transform: scale(1); filter: drop-shadow(0 8px 12px rgba(180, 100, 20, 0.35)); }
+}
+
+.slot-wrapper.ready-pulse .egg-sprite {
+  animation: eggReadyPulse 0.7s ease 2;
+}
+
 /* 2. Bulk 10 Eggs Hotspot */
 .btn-hotspot.btn-open-10 {
   width: 278px;

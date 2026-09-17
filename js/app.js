@@ -276,20 +276,30 @@ document.addEventListener('DOMContentLoaded', () => {
     btnOpen10.disabled = (remainingCount === 0);
   }
 
+  // Helper to guide user to the Open 1 button with a pulse effect
+  function highlightOpenButton() {
+    btnOpen1.classList.remove('highlight-pulse');
+    void btnOpen1.offsetWidth; // trigger reflow
+    btnOpen1.classList.add('highlight-pulse');
+    setTimeout(() => btnOpen1.classList.remove('highlight-pulse'), 1100);
+  }
+
   // Handle Slot Click (Open 1 egg)
   function handleSlotClick(slotIndex, wrapperEl) {
     if (game.state.phase === 'SHUFFLE') return;
 
-    // Check if in PREVIEW -> must shuffle first
+    // In PREVIEW -> Do NOT open or shuffle from clicking cards directly!
+    // Player must press "เปิด 1 ฟอง" button below first!
     if (game.state.phase === 'PREVIEW') {
-      startShuffleSequence(() => {
-        // After shuffle, open this egg
-        openSingleEggWithFX(slotIndex, wrapperEl);
-      });
+      window.soundEngine.playClick();
+      highlightOpenButton();
       return;
     }
 
-    openSingleEggWithFX(slotIndex, wrapperEl);
+    // In OPENING -> Now player can select and crack open this egg
+    if (game.state.phase === 'OPENING') {
+      openSingleEggWithFX(slotIndex, wrapperEl);
+    }
   }
 
   function openSingleEggWithFX(slotIndex, wrapperEl) {
@@ -475,15 +485,42 @@ document.addEventListener('DOMContentLoaded', () => {
     window.soundEngine.playClick();
     if (game.getRemainingCount() === 0) return;
 
+    // 1. Check Gold balance before starting
+    if (game.state.gold < 5) {
+      window.soundEngine.playError();
+      showToast('Gold ไม่เพียงพอ! (ต้องการ 5 Gold)');
+      openTopupModal();
+      return;
+    }
+
+    // 2. If currently in PREVIEW, start animation and wait until finished
     if (game.state.phase === 'PREVIEW') {
+      btnOpen1.disabled = true;
+      btnOpen10.disabled = true;
+
+      // Run shuffle animation to completion
       startShuffleSequence(() => {
-        showToast('เลือกไข่ 1 ฟองที่คุณต้องการเปิด!');
+        btnOpen1.disabled = false;
+        btnOpen10.disabled = false;
+        window.soundEngine.playCoin();
+
+        // Add subtle inviting pulse on all unopened eggs
+        const unopened = document.querySelectorAll('.slot-wrapper.can-open');
+        unopened.forEach(u => u.classList.add('ready-pulse'));
+        setTimeout(() => {
+          unopened.forEach(u => u.classList.remove('ready-pulse'));
+        }, 1500);
       });
       return;
     }
 
+    // 3. If already in OPENING phase, pulse unopened eggs to highlight
     if (game.state.phase === 'OPENING') {
-      showToast('จิ้มเลือกตำแหน่งไข่บนกระดานได้เลย!');
+      const unopened = document.querySelectorAll('.slot-wrapper.can-open');
+      unopened.forEach(u => u.classList.add('ready-pulse'));
+      setTimeout(() => {
+        unopened.forEach(u => u.classList.remove('ready-pulse'));
+      }, 1000);
     }
   });
 

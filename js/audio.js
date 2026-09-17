@@ -79,10 +79,10 @@ class SoundEngine {
     if (this.isMuted) return;
     this.ensureAudio();
     const t = this.ctx.currentTime;
-    const duration = 1.6;
+    const duration = 1.1;
 
-    // Filtered noise swooshes
-    const bufferSize = this.ctx.sampleRate * duration;
+    // Fast whipping noise swooshes
+    const bufferSize = Math.floor(this.ctx.sampleRate * duration);
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -94,15 +94,17 @@ class SoundEngine {
 
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(400, t);
-    filter.frequency.exponentialRampToValueAtTime(1800, t + duration * 0.5);
-    filter.frequency.exponentialRampToValueAtTime(300, t + duration);
-    filter.Q.value = 3.0;
+    filter.frequency.setValueAtTime(500, t);
+    filter.frequency.exponentialRampToValueAtTime(2400, t + 0.3);
+    filter.frequency.exponentialRampToValueAtTime(800, t + 0.6);
+    filter.frequency.exponentialRampToValueAtTime(2200, t + 0.85);
+    filter.frequency.exponentialRampToValueAtTime(400, t + duration);
+    filter.Q.value = 2.5;
 
     const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.01, t);
-    gain.gain.linearRampToValueAtTime(0.2, t + 0.2);
-    gain.gain.linearRampToValueAtTime(0.25, t + duration * 0.7);
+    gain.gain.setValueAtTime(0.02, t);
+    gain.gain.linearRampToValueAtTime(0.28, t + 0.15);
+    gain.gain.linearRampToValueAtTime(0.25, t + duration * 0.75);
     gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
     noise.connect(filter);
@@ -112,23 +114,23 @@ class SoundEngine {
     noise.start(t);
     noise.stop(t + duration);
 
-    // Complementary melodic arpeggios
-    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25];
+    // Rapid magical flutter notes
+    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1046.50, 783.99, 659.25, 523.25];
     notes.forEach((freq, idx) => {
       const osc = this.ctx.createOscillator();
       const oscGain = this.ctx.createGain();
-      const st = t + idx * 0.12;
+      const st = t + idx * 0.09;
 
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, st);
-      oscGain.gain.setValueAtTime(0.08, st);
-      oscGain.gain.exponentialRampToValueAtTime(0.001, st + 0.2);
+      oscGain.gain.setValueAtTime(0.09, st);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, st + 0.14);
 
       osc.connect(oscGain);
       oscGain.connect(this.ctx.destination);
 
       osc.start(st);
-      osc.stop(st + 0.2);
+      osc.stop(st + 0.14);
     });
   }
 

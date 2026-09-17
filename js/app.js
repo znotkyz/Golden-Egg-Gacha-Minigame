@@ -340,11 +340,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 450);
   }
 
-  // Shuffle Phase Sequence
+  // =========================================================
+  // ⚙️ การตั้งค่าความเร็ว Shuffle (สามารถปรับแต่งได้ที่นี่)
+  // =========================================================
+  const SHUFFLE_CONFIG = {
+    totalRounds: 7,       // จำนวนรอบการสลับตำแหน่ง (ค่าเริ่มต้น: 7 รอบ)
+    speedMs: 200,         // ความเร็วต่อ 1 รอบ ยิ่งน้อยยิ่งไว (เช่น 70 = ไวมาก, 120 = กำลังสวย, 200 = ช้าลง)
+    blurAmount: '10px'   // ระดับความเบลอของ Motion Blur (เช่น '2px', '4.5px', '6px')
+  };
+
+  // High-Speed Motion Blur Shuffle Sequence
   function startShuffleSequence(onFinished) {
     window.soundEngine.playShuffle();
 
-    // Shuffle the actual rewards across the slots so Grand Prize moves randomly
+    // 1. Shuffle the actual rewards across the 10 slots
     const rewards = game.state.slots.map(s => s.reward);
     for (let i = rewards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -366,34 +375,85 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
 
     const wrappers = document.querySelectorAll('.slot-wrapper');
-    wrappers.forEach(w => w.classList.add('shuffling'));
+    wrappers.forEach(w => {
+      w.classList.remove('settling');
+      w.classList.add('shuffling');
+      // กำหนดความเร็วและค่า blur ให้ตรงกับ SHUFFLE_CONFIG
+      w.style.transition = `transform ${SHUFFLE_CONFIG.speedMs}ms cubic-bezier(0.2, 0.9, 0.3, 1), filter 100ms ease`;
+      w.style.filter = `blur(${SHUFFLE_CONFIG.blurAmount}) brightness(1.3) drop-shadow(0 0 18px rgba(255, 215, 0, 0.9))`;
+    });
 
-    // Perform multiple rapid swap motions
-    let shuffleCount = 0;
-    const maxShuffles = 3;
+    // Helper to calculate pixel coordinate of any slot index (0..9)
+    const getCoord = (idx) => ({
+      x: (idx % 5) * 115,
+      y: Math.floor(idx / 5) * 145
+    });
 
+    let round = 0;
     const interval = setInterval(() => {
-      shuffleCount++;
-      wrappers.forEach(w => {
-        const rx = (Math.random() - 0.5) * 60;
-        const ry = (Math.random() - 0.5) * 40;
-        const scale = 0.95 + Math.random() * 0.1;
-        w.style.transform = `translate(${rx}px, ${ry}px) scale(${scale})`;
+      round++;
+
+      // Create a random permutation of targets [0..9]
+      const perm = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      for (let i = perm.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [perm[i], perm[j]] = [perm[j], perm[i]];
+      }
+
+      // Move each egg rapidly towards a target slot with motion blur
+      wrappers.forEach((w, origIdx) => {
+        const targetIdx = perm[origIdx];
+        const orig = getCoord(origIdx);
+        const target = getCoord(targetIdx);
+        const dx = target.x - orig.x;
+        const dy = target.y - orig.y;
+
+        const curveY = (origIdx % 2 === 0 ? -14 : 14);
+        const rot = (dx > 0 ? 5 : dx < 0 ? -5 : 0);
+
+        w.style.transform = `translate(${dx}px, ${dy + curveY}px) rotate(${rot}deg) scale(1.08)`;
+
+        // Spawn gold speed-trail sparks on canvas
+        if (round % 2 === 0) {
+          const rect = w.getBoundingClientRect();
+          const contRect = gameContainer.getBoundingClientRect();
+          const cx = (rect.left + rect.width / 2 - contRect.left) / (contRect.width / 1024);
+          const cy = (rect.top + rect.height / 2 - contRect.top) / (contRect.height / 575);
+          spawnBurst(cx, cy, 3, ['#ffd700', '#fff275', '#ffffff']);
+        }
       });
 
-      if (shuffleCount >= maxShuffles) {
+      if (round >= SHUFFLE_CONFIG.totalRounds) {
         clearInterval(interval);
+
+        // Snap back into place cleanly with landing sparkle poofs
         setTimeout(() => {
-          wrappers.forEach(w => {
-            w.style.transform = '';
+          wrappers.forEach((w, idx) => {
             w.classList.remove('shuffling');
+            w.classList.add('settling');
+            w.style.transition = '';
+            w.style.filter = '';
+            w.style.transform = 'translate(0, 0) scale(1) rotate(0deg)';
+
+            const rect = w.getBoundingClientRect();
+            const contRect = gameContainer.getBoundingClientRect();
+            const cx = (rect.left + rect.width / 2 - contRect.left) / (contRect.width / 1024);
+            const cy = (rect.top + rect.height / 2 - contRect.top) / (contRect.height / 575);
+            spawnBurst(cx, cy, 6, ['#ffd700', '#ffffff']);
           });
-          game.state.phase = 'OPENING';
-          render();
-          if (onFinished) onFinished();
-        }, 350);
+
+          window.soundEngine.playCoin();
+
+          setTimeout(() => {
+            wrappers.forEach(w => w.classList.remove('settling'));
+            game.state.phase = 'OPENING';
+            game.saveState();
+            render();
+            if (onFinished) onFinished();
+          }, 280);
+        }, 80);
       }
-    }, 400);
+    }, SHUFFLE_CONFIG.speedMs);
   }
 
   // Bottom Button: "เปิด 1 ฟอง (5 Gold)"

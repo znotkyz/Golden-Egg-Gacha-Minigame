@@ -1,0 +1,2 @@
+# Golden Egg Gacha Minigame
+

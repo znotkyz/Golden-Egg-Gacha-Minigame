@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         eggLayer.appendChild(eggImg);
         wrapper.appendChild(eggLayer);
       } else if (phase === 'PREVIEW') {
-        // In preview phase, clicking a slot starts shuffle
+        // In preview phase, clicking a slot guides user to press "เปิด 1 ฟอง"
         wrapper.addEventListener('click', () => {
           handleSlotClick(index, wrapper);
         });
@@ -293,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (game.state.phase === 'PREVIEW') {
       window.soundEngine.playClick();
       highlightOpenButton();
+      showToast('💡 กรุณากดปุ่ม "เปิด 1 ฟอง" ด้านล่างเพื่อเริ่มสุ่ม');
       return;
     }
 

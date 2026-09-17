@@ -442,23 +442,19 @@ body {
   position: relative;
   width: 102px;
   height: 135px;
-  cursor: pointer;
+  cursor: default;
   perspective: 1000px;
   border-radius: 14px;
   transition: transform 0.15s ease;
 }
 
+.slot-wrapper.can-open {
+  cursor: pointer;
+}
+
 .slot-wrapper.can-open:hover {
   transform: translateY(-4px) scale(1.04);
   box-shadow: 0 0 18px rgba(255, 215, 0, 0.7);
-}
-
-.slot-wrapper {
-  position: relative;
-  width: 102px;
-  height: 135px;
-  cursor: pointer;
-  perspective: 1000px;
 }
 
 /* Inner Card Container */
